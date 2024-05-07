@@ -18,6 +18,7 @@ import os
 from numpy.testing import assert_almost_equal, assert_array_almost_equal
 from numpy.testing import assert_array_equal
 import unittest
+import math
 
 """
     Minimalistic implementation of the Self Organizing Maps (SOM).
@@ -565,7 +566,7 @@ class TestMinisom(unittest.TestCase):
         self.som._weights[1, 1] = 2.0
 
     def test_decay_function(self):
-        assert self.som._decay_function(1., 2., 3.) == 1./(1.+2./(3./2))
+        assert math.isclose(self.som._decay_function(1., 2., 3.), 1./(1.+2./(3./2)), rel_tol=1e-09, abs_tol=0.0)
 
     def test_fast_norm(self):
         assert fast_norm(array([1, 3])) == sqrt(1+9)
@@ -621,12 +622,12 @@ class TestMinisom(unittest.TestCase):
 
     def test_gaussian(self):
         bell = self.som._gaussian((2, 2), 1)
-        assert bell.max() == 1.0
+        assert math.isclose(bell.max(), 1.0, rel_tol=1e-09, abs_tol=0.0)
         assert bell.argmax() == 12  # unravel(12) = (2,2)
 
     def test_mexican_hat(self):
         bell = self.som._mexican_hat((2, 2), 1)
-        assert bell.max() == 1.0
+        assert math.isclose(bell.max(), 1.0, rel_tol=1e-09, abs_tol=0.0)
         assert bell.argmax() == 12  # unravel(12) = (2,2)
 
     def test_bubble(self):
@@ -657,7 +658,7 @@ class TestMinisom(unittest.TestCase):
         assert response[1, 1] == 1
 
     def test_activate(self):
-        assert self.som.activate(5.0).argmin() == 13.0  # unravel(13) = (2,3)
+        assert math.isclose(self.som.activate(5.0).argmin(), 13.0, rel_tol=1e-09, abs_tol=0.0)  # unravel(13) = (2,3)
 
     def test_distance_from_weights(self):
         data = arange(-5, 5).reshape(-1, 1)
@@ -668,8 +669,8 @@ class TestMinisom(unittest.TestCase):
                 assert(distances[i][j] == norm(data[i] - weights[j]))
 
     def test_quantization_error(self):
-        assert self.som.quantization_error([[5], [2]]) == 0.0
-        assert self.som.quantization_error([[4], [1]]) == 1.0
+        assert math.isclose(self.som.quantization_error([[5], [2]]), 0.0, rel_tol=1e-09, abs_tol=0.0)
+        assert math.isclose(self.som.quantization_error([[4], [1]]), 1.0, rel_tol=1e-09, abs_tol=0.0)
 
     def test_topographic_error(self):
         # 5 will have bmu_1 in (2,3) and bmu_2 in (2, 4)
@@ -679,18 +680,18 @@ class TestMinisom(unittest.TestCase):
         # which are not in the same neighborhood
         self.som._weights[4, 4] = 15.0
         self.som._weights[0, 0] = 14.
-        assert self.som.topographic_error([[5]]) == 0.0
-        assert self.som.topographic_error([[15]]) == 1.0
+        assert math.isclose(self.som.topographic_error([[5]]), 0.0, rel_tol=1e-09, abs_tol=0.0)
+        assert math.isclose(self.som.topographic_error([[15]]), 1.0, rel_tol=1e-09, abs_tol=0.0)
 
         self.som.topology = 'hexagonal'
         with self.assertRaises(NotImplementedError):
-            assert self.som.topographic_error([[5]]) == 0.0
+            assert math.isclose(self.som.topographic_error([[5]]), 0.0, rel_tol=1e-09, abs_tol=0.0)
         self.som.topology = 'rectangular'
 
     def test_quantization(self):
         q = self.som.quantization(array([[4], [2]]))
-        assert q[0] == 5.0
-        assert q[1] == 2.0
+        assert math.isclose(q[0], 5.0, rel_tol=1e-09, abs_tol=0.0)
+        assert math.isclose(q[1], 2.0, rel_tol=1e-09, abs_tol=0.0)
 
     def test_random_seed(self):
         som1 = MiniSom(5, 5, 2, sigma=1.0, learning_rate=0.5, random_seed=1)
