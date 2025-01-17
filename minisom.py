@@ -18,6 +18,7 @@ import os
 from numpy.testing import assert_almost_equal, assert_array_almost_equal
 from numpy.testing import assert_array_equal
 import unittest
+import fickling
 
 """
     Minimalistic implementation of the Self Organizing Maps (SOM).
@@ -755,5 +756,5 @@ class TestMinisom(unittest.TestCase):
         with open('som.p', 'wb') as outfile:
             pickle.dump(self.som, outfile)
         with open('som.p', 'rb') as infile:
-            pickle.load(infile)
+            fickling.load(infile)
         os.remove('som.p')
